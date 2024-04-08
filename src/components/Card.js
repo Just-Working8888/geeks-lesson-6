@@ -1,11 +1,17 @@
-function Card({ image, title, description, price, }) {
+function Card({ props, cart, setCart }) {
+    const { img, title, description, price } = props
+
+
+    function addTocart() {
+        setCart([...cart, props])
+    }
     return (
         <div className='card'>
-            <img src={image} />
+            <img src={img} />
             <h1>{title}</h1>
             <p>{description}</p>
             <b>{price}</b>
-            <button>add to cart</button>
+            <button onClick={addTocart}>add to cart</button>
         </div>
     )
 }

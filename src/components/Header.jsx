@@ -1,8 +1,12 @@
 import { useState } from "react"
 import Cart from "./Cart"
+import Modal from "./Modal"
+import { useTheme, useThemeToggle } from "../App"
 
 function Header({ data }) {
     const [cart, setCart] = useState(false)
+    const isDark = useTheme()
+    const toggleTheme = useThemeToggle()
     return (
         <>
             <header>
@@ -16,9 +20,13 @@ function Header({ data }) {
                         <li>home</li>
                     </ul>
                 </nav>
+                <button onClick={toggleTheme}>{!isDark ? 'false' : 'true'}</button>
                 <button onClick={() => setCart(prev => !prev)}>cart</button>
             </header>
-            {cart && <Cart data={data} />}
+
+            <Modal setState={setCart} state={cart}>
+                <Cart data={data} />
+            </Modal>
         </>
 
     )

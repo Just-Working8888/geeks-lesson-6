@@ -1,8 +1,42 @@
 import './App.css';
 import Card from './components/Card';
-import { useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import Form from './components/Form';
 import Header from './components/Header'
+import Modal from './components/Modal';
+
+export const ThemeContext = createContext()
+export const ThemeToggleContext = createContext()
+
+export function ThemeProvider({ children }) {
+  const [isDark, setIsDark] = useState(false)
+  const togleTheme = () => {
+    setIsDark(prev => !prev)
+  }
+  return (
+    <ThemeContext.Provider value={isDark}>
+      <ThemeToggleContext.Provider value={togleTheme}>
+        {children}
+      </ThemeToggleContext.Provider>
+    </ThemeContext.Provider>
+  )
+}
+
+export function useTheme() {
+  const context = useContext(ThemeContext)
+  if (context === undefined) {
+    throw new Error('USeTheme must be used with a theme provider')
+  }
+  return context
+}
+export function useThemeToggle() {
+  const context = useContext(ThemeToggleContext);
+  if (context === undefined) {
+    throw new Error('useThemeToggle must be used within a ThemeProvider');
+  }
+  return context;
+}
+
 function App() {
   const [state, setState] = useState('')
   const [sort, setSort] = useState('asc')
@@ -63,26 +97,31 @@ function App() {
     return <div>loading....</div>
   }
   return (
-    <div>
-      <Header data={cart} />
-      <input onChange={(e) => setState(e.target.value)} />
+    <ThemeProvider>
+      <div>
+        <Header data={cart} />
+        <input onChange={(e) => setState(e.target.value)} />
 
-      <button onClick={() => setSort('asc')}>sort by top</button>
-      <button onClick={() => setSort('desc')}> sort by bot</button>
-      <button onClick={() => setModal(!modal)}>open</button>
-      {modal && <Form />}
-      <div className="App">
-        {
-          data.map((item) =>
-            <Card
-              key={item.id}
-              props={item}
-              cart={cart}
-              setCart={setCart}
-            />)
-        }
+        <button onClick={() => setSort('asc')}>sort by top</button>
+        <button onClick={() => setSort('desc')}> sort by bot</button>
+        <button onClick={() => setModal(!modal)}>open</button>
+        {/* {modal && <Form setState={setModal}/>} */}
+        <Modal state={modal} setState={setModal}>
+          <Form />
+        </Modal>
+        <div className="App">
+          {
+            data.map((item) =>
+              <Card
+                key={item.id}
+                props={item}
+                cart={cart}
+                setCart={setCart}
+              />)
+          }
+        </div>
       </div>
-    </div>
+    </ThemeProvider>
   );
 }
 

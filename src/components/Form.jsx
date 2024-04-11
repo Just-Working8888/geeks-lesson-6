@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useTheme } from "../App"
 
 function Form() {
     const [title, setTitle] = useState('')
@@ -6,7 +7,7 @@ function Form() {
     const [price, setPrice] = useState('')
     const [oldprice, setoldPrice] = useState('')
     const [img, setImg] = useState('')
-
+    const isDark = useTheme()
     function onSumit() {
         fetch('https://63d304794abff88834170d21.mockapi.io/items', {
             method: 'POST',
@@ -22,7 +23,10 @@ function Form() {
     }
 
     return (
-        <div>
+        <div style={isDark === true ? { background: 'black' } : {}}>
+
+            <h1>modal form</h1>
+
             <input onChange={(e) => setTitle(e.target.value)}
                 placeholder="title:" type="text" />
             <input placeholder="description:" type="text" />
@@ -31,9 +35,9 @@ function Form() {
             <input placeholder="img:" type="text" />
 
             <button onClick={onSumit}>onSubmit</button>
+        </div >
 
 
-        </div>
     )
 }
 export default Form
